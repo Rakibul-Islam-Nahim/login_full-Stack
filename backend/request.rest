@@ -1,0 +1,27 @@
+GET http://localhost:3000/
+
+###
+
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{
+    "username" : "Helal2",
+    "password" : "helal123",
+    "email" : "helal2@gmail.com",
+    "mobile" : "01723323111"
+}
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email" : "helal2@gmail.com",
+    "password" : "helal123"
+}
+
+###
+
+GET http://localhost:3000/logout
