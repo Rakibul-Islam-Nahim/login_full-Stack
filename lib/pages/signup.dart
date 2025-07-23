@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,16 +17,28 @@ class _SignupState extends State<Signup> {
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
-  void _signup() {
+  Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       final username = _nameController.text;
+      final email = _emailController.text;
       final password = _passwordController.text;
-      final mobile = _mobileController.text;
-
-      // Simulate signup logic
-      print('Username: $username');
-      print('Password: $password');
-      print('Mobile: $mobile');
+      final mobile = int.parse(_mobileController.text);
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/signup'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+          "mobile": mobile,
+          "email": email,
+        }),
+      );
+      if (response.statusCode == 201) {
+        print('Data created successfully : ${response.body}');
+        Navigator.pop(context);
+      } else {
+        print('Failed to connect');
+      }
       // Navigate or show success message here
     }
   }

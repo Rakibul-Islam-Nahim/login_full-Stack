@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,15 +20,21 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _obscureText = !_obscureText);
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailCtrl.text;
       final password = _passwordCtrl.text;
-
-      // Simulate login logic
-      print('Email: $email');
-      print('Password: $password');
-      // Navigate or show success message here
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        print('${data['message']}');
+      } else {
+        print('Failed to connect to the server: ${data}');
+      }
     }
   }
 
@@ -71,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
     return Align(
       alignment: Alignment.center,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: _login,
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
           backgroundColor: Color(0xFFf22b91),

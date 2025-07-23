@@ -6,7 +6,7 @@ let isAuthorized = false;
 const _getUsers = async (req, res) => {
   const users = await userModel.find();
   if (!isAuthorized) {
-    return res.status(401).send("Unauthorized Access");
+    return res.status(401).json({ message: "Unauthorized User" });
   }
   res.json(users);
 };
@@ -22,7 +22,7 @@ const _signupUser = async (req, res) => {
     mobile: mobile,
   };
   await userModel.create(user);
-  res.send(`${username} user is created`);
+  res.status(201).json({ message: "User created" });
 };
 
 const _loginUser = async (req, res) => {
@@ -30,22 +30,24 @@ const _loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email: email });
     if (!user) {
-      return res.status(404).send("User Not Found");
+      return res.status(404).json({ message: "User Not Found" });
     }
     const isValidPass = await bcrypt.compare(password, user.password);
     if (!isValidPass) {
-      return res.status(401).send("Incorrect Password");
+      return res.status(401).json({ message: "Incorrect Password" });
     }
     isAuthorized = true;
-    res.status(200).send(`${user.username} logged in successfully`);
+    res
+      .status(200)
+      .json({ message: `${user.username} logged in successfully` });
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).json({ message: err.message });
   }
 };
 
 const _logoutUser = (req, res) => {
   isAuthorized = false;
-  res.status(200).send("Logout Successfully");
+  res.status(200).json({ message: "Logout Successfully" });
 };
 
 module.exports = {
