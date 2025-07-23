@@ -6,9 +6,9 @@ POST http://localhost:3000/signup
 Content-Type: application/json
 
 {
-    "username" : "Helal2",
-    "password" : "helal123",
-    "email" : "helal2@gmail.com",
+    "username" : "mew",
+    "password" : "hal123",
+    "email" : "mew@gmail.com",
     "mobile" : "01723323111"
 }
 
