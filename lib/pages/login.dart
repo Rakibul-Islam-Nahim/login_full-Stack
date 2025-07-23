@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -55,40 +56,72 @@ class _LoginPageState extends State<LoginPage> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
-            Expanded(
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: double.infinity,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    viewportFraction: 1.0,
-                  ),
-                  items: imageUrls.map((url) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        url,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+            _cardWidget(),
             Expanded(
               child: Container(
+                margin: EdgeInsets.only(left: 70, right: 50, top: 50),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: Colors.orange),
-                child: Text("Bye"),
+                child: ListView(
+                  children: [
+                    Text(
+                      "Login with an account",
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFf8f7f9),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(color: Color(0xFFf8f7f9)),
+                        children: [
+                          TextSpan(
+                            text: ' Sign Up',
+                            style: TextStyle(color: Colors.tealAccent),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushNamed(context, '/signup');
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _cardWidget() {
+    return Expanded(
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: double.infinity,
+            autoPlay: true,
+            enlargeCenterPage: true,
+            viewportFraction: 1.0,
+          ),
+          items: imageUrls.map((url) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

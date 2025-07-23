@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: "Poppins"),
       initialRoute: '/',
       routes: {'/signup': (context) => Signup()},
       home: LoginPage(),
