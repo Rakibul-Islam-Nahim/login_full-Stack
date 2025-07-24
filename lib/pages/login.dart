@@ -54,48 +54,126 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         margin: EdgeInsets.all(15),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        child: Row(
+        child: Row(children: [_cardWidget(), _loginWidget(context)]),
+      ),
+    );
+  }
+
+  Expanded _loginWidget(BuildContext context) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.only(left: 90, right: 70, top: 70),
+        alignment: Alignment.center,
+        child: ListView(
           children: [
-            _cardWidget(),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 70, right: 50, top: 50),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(color: Colors.orange),
-                child: ListView(
-                  children: [
-                    Text(
-                      "Login with an account",
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFf8f7f9),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        text: "Don't have an account? ",
-                        style: TextStyle(color: Color(0xFFf8f7f9)),
-                        children: [
-                          TextSpan(
-                            text: ' Sign Up',
-                            style: TextStyle(color: Colors.tealAccent),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(context, '/signup');
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                  ],
-                ),
-              ),
-            ),
+            _title(),
+            SizedBox(height: 10),
+            _guideTextOne(context),
+            SizedBox(height: 40),
+            _emailField(),
+            SizedBox(height: 15),
+            _passwordField(),
+            SizedBox(height: 10),
+            _guideTextTwo(context),
+            SizedBox(height: 25),
+            _loginButton(),
           ],
         ),
+      ),
+    );
+  }
+
+  Text _title() {
+    return Text(
+      "Login with an account",
+      style: TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFFf8f7f9),
+      ),
+    );
+  }
+
+  RichText _guideTextOne(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: "Don't have an account? ",
+        style: TextStyle(color: Color(0xFFf8f7f9)),
+        children: [
+          TextSpan(
+            text: ' Sign Up',
+            style: TextStyle(color: Colors.tealAccent),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pushNamed(context, '/signup');
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  RichText _guideTextTwo(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: "Forgot your password? ",
+        style: TextStyle(color: Color(0xFFf8f7f9)),
+        children: [
+          TextSpan(
+            text: " Reset now",
+            style: TextStyle(color: Colors.tealAccent),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pushNamed(context, '/signup');
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _loginButton() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF6e54b5)),
+        onPressed: _login,
+        child: Text(
+          "Log In Account",
+          style: TextStyle(color: Color(0xFFf8f7f9), fontSize: 18),
+        ),
+      ),
+    );
+  }
+
+  Container _emailField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Color(0xFF3b364c),
+      ),
+      child: TextFormField(
+        controller: _emailCtrl,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(color: Color(0xFFf8f7f9)),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: "Email",
+          labelStyle: TextStyle(color: Color(0xFF5f5a70)),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Enter your email';
+          }
+          if (!value.contains('@')) {
+            return 'Enter a valid email address';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -127,79 +205,33 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Align _loginButton() {
-    return Align(
-      alignment: Alignment.center,
-      child: ElevatedButton(
-        onPressed: _login,
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Color(0xFFf22b91),
-          minimumSize: Size(100, 10),
-        ),
-        child: const Text(
-          'Login',
-          style: TextStyle(fontSize: 16, color: Colors.tealAccent),
-        ),
+  Container _passwordField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Color(0xFF3b364c),
       ),
-    );
-  }
-
-  TextFormField _passwordField() {
-    return TextFormField(
-      controller: _passwordCtrl,
-      obscureText: _obscureText,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'Password',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
+      child: TextFormField(
+        controller: _passwordCtrl,
+        obscureText: _obscureText,
+        style: TextStyle(color: Color(0xFFf8f7f9)),
+        decoration: InputDecoration(
+          labelText: 'Password',
+          labelStyle: TextStyle(color: Color(0xFF5f5a70)),
+          border: const OutlineInputBorder(),
+          suffixIcon: IconButton(
+            icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+            onPressed: _togglePasswordVisibility,
+          ),
         ),
-        suffixIcon: IconButton(
-          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
-          onPressed: _togglePasswordVisibility,
-        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) return 'Enter your password';
+          if (value.length < 6) return 'Password must be at least 6 characters';
+          return null;
+        },
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your password';
-        if (value.length < 6) return 'Password must be at least 6 characters';
-        return null;
-      },
-    );
-  }
-
-  TextFormField _emailField() {
-    return TextFormField(
-      controller: _emailCtrl,
-      keyboardType: TextInputType.emailAddress,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'Email',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your email';
-        if (!value.contains('@')) return 'Enter a valid email';
-        return null;
-      },
-    );
-  }
-
-  Text _loginTitle() {
-    return const Text(
-      'Login',
-      style: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFFf22b91),
-      ),
-      textAlign: TextAlign.center,
     );
   }
 }
