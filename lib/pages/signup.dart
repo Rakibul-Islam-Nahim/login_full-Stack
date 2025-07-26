@@ -1,8 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:login_full_stack/utils/app_color.dart';
+import 'package:login_full_stack/widgets/card_widget.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -17,6 +18,13 @@ class _SignupState extends State<Signup> {
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
+  bool _obscureText = true;
+  bool isChecked = false;
+
+  void _togglePasswordVisibility() {
+    setState(() => _obscureText = !_obscureText);
+  }
+
   Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       final username = _nameController.text;
@@ -46,142 +54,216 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00002c),
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Sign Up Form',
-            style: TextStyle(
-              fontSize: 22,
-              color: Color(0xFFf22b91),
-              fontWeight: FontWeight.w600,
+      backgroundColor: AppColor.background,
+      body: Container(
+        margin: EdgeInsets.all(15),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+        child: Row(
+          children: [
+            CardWidget(),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 90, right: 70, top: 70),
+                child: ListView(
+                  children: [
+                    _signupTitle(),
+                    SizedBox(height: 10),
+                    _guideTextOne(context),
+                    SizedBox(height: 40),
+                    _usernameField(),
+                    SizedBox(height: 15),
+                    _mobileField(),
+                    SizedBox(height: 15),
+                    _emailField(),
+                    SizedBox(height: 15),
+                    _passwordField(),
+                    SizedBox(height: 10),
+                    _checkBoxField(),
+                    SizedBox(height: 25),
+                    _signupButton(),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-        backgroundColor: Color(0xFF00002c),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Container(
-            margin: EdgeInsets.only(left: 100, right: 100, top: 50),
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                _usernameField(),
-                SizedBox(height: 16),
-                _emailField(),
-                SizedBox(height: 16),
-                _passwordField(),
-                SizedBox(height: 16),
-                _mobileNumber(),
-                SizedBox(height: 24),
-                _signupButton(),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Align _signupButton() {
-    return Align(
-      alignment: Alignment.center,
+  Text _signupTitle() {
+    return Text(
+      'Create an Account',
+      style: TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.w600,
+        color: AppColor.text,
+      ),
+    );
+  }
+
+  Row _checkBoxField() {
+    return Row(
+      children: [
+        Checkbox(
+          value: isChecked,
+          onChanged: (value) {
+            setState(() {
+              isChecked = value!;
+            });
+          },
+        ),
+        Text("Remember me", style: TextStyle(color: AppColor.text)),
+      ],
+    );
+  }
+
+  Container _usernameField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: AppColor.form,
+      ),
+      child: TextFormField(
+        controller: _nameController,
+        style: TextStyle(color: AppColor.text),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: 'Username',
+          labelStyle: TextStyle(color: AppColor.hint),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter you Username';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  RichText _guideTextOne(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: "Already have an account? ",
+        style: TextStyle(color: AppColor.text),
+        children: [
+          TextSpan(
+            text: ' Log In',
+            style: TextStyle(color: Colors.tealAccent),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pop(context);
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _signupButton() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(backgroundColor: AppColor.button),
         onPressed: _signup,
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Color(0xFFf22b91),
-          minimumSize: Size(100, 10),
-        ),
-        child: const Text(
-          'SignUp',
-          style: TextStyle(fontSize: 16, color: Colors.tealAccent),
+        child: Text(
+          "Sign Up Account",
+          style: TextStyle(color: AppColor.text, fontSize: 18),
         ),
       ),
     );
   }
 
-  TextFormField _passwordField() {
-    return TextFormField(
-      controller: _passwordController,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'Password',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
-        ),
+  Container _passwordField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: AppColor.form,
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your password';
-        if (value.length < 6) return 'Password must be at least 6 characters';
-        return null;
-      },
+      child: TextFormField(
+        controller: _passwordController,
+        obscureText: _obscureText,
+        style: TextStyle(color: AppColor.text),
+        decoration: InputDecoration(
+          labelText: 'Password',
+          labelStyle: TextStyle(color: AppColor.hint),
+          border: const OutlineInputBorder(),
+          suffixIcon: IconButton(
+            icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+            onPressed: _togglePasswordVisibility,
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) return 'Enter your password';
+          if (value.length < 6) return 'Password must be at least 6 characters';
+          return null;
+        },
+      ),
     );
   }
 
-  TextFormField _emailField() {
-    return TextFormField(
-      controller: _emailController,
-      keyboardType: TextInputType.emailAddress,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'Email',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
-        ),
+  Container _emailField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: AppColor.form,
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your email';
-        if (!value.contains('@')) return 'Enter a valid email';
-        return null;
-      },
+      child: TextFormField(
+        controller: _emailController,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(color: AppColor.text),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: "Email",
+          labelStyle: TextStyle(color: AppColor.hint),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Enter your email';
+          }
+          if (!value.contains('@')) {
+            return 'Enter a valid email address';
+          }
+          return null;
+        },
+      ),
     );
   }
 
-  TextFormField _usernameField() {
-    return TextFormField(
-      controller: _nameController,
-      keyboardType: TextInputType.emailAddress,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'User Name',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
-        ),
+  Container _mobileField() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: AppColor.form,
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your username';
-        return null;
-      },
-    );
-  }
-
-  TextFormField _mobileNumber() {
-    return TextFormField(
-      controller: _mobileController,
-      keyboardType: TextInputType.emailAddress,
-      style: TextStyle(color: Colors.tealAccent),
-      decoration: InputDecoration(
-        labelText: 'Mobile Number',
-        labelStyle: TextStyle(color: Colors.tealAccent),
-        border: const OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.tealAccent, width: 2),
+      child: TextFormField(
+        controller: _mobileController,
+        keyboardType: TextInputType.phone,
+        style: TextStyle(color: AppColor.text),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: "Mobile Number",
+          labelStyle: TextStyle(color: AppColor.hint),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Enter your mobile number';
+          }
+          return null;
+        },
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Enter your mobile number';
-        return null;
-      },
     );
   }
 }
