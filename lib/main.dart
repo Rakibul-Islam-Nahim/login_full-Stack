@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_full_stack/pages/home.dart';
 import 'package:login_full_stack/pages/login.dart';
 import 'package:login_full_stack/pages/signup.dart';
 
@@ -16,7 +17,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: "Poppins"),
       initialRoute: '/',
-      routes: {'/signup': (context) => Signup()},
+      routes: {
+        '/signup': (context) => Signup(),
+        '/home': (context) => MongoDataPage(),
+      },
       home: LoginPage(),
     );
   }

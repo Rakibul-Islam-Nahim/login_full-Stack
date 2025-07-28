@@ -23,20 +23,20 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      final email = _emailCtrl.text;
-      final password = _passwordCtrl.text;
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        print('${data['message']}');
-      } else {
-        print('Failed to connect to the server: ${data['message']}');
-      }
+    print('Button Pressed');
+    final email = _emailCtrl.text;
+    final password = _passwordCtrl.text;
+    final response = await http.post(
+      Uri.parse('http://localhost:3000/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print('${data['message']}');
+      Navigator.pushNamed(context, '/home');
+    } else {
+      print('Failed to connect to the server: ${data['message']}');
     }
   }
 

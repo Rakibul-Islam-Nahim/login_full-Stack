@@ -5,9 +5,9 @@ let isAuthorized = false;
 
 const _getUsers = async (req, res) => {
   const users = await userModel.find();
-  if (!isAuthorized) {
-    return res.status(401).json({ message: "Unauthorized User" });
-  }
+  // if (!isAuthorized) {
+  //   return res.status(401).json({ message: "Unauthorized User" });
+  // }
   res.json(users);
 };
 
